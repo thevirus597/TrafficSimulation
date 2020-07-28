@@ -1,8 +1,10 @@
 package sr.unasat.traffic.simulation.services;
 
+import sr.unasat.traffic.simulation.entities.Voertuig;
+
 public class PriorityQueue {
     private int maxSize;
-    private String[] queArray;
+    private Voertuig[] queArray;
     private int nItems;
     private int front;
     private int rear;
@@ -10,29 +12,27 @@ public class PriorityQueue {
     public PriorityQueue(int maxSize) // constructor
     {
         this.maxSize = maxSize;
-        queArray = new String[maxSize];
+        queArray = new Voertuig[maxSize];
         front = 0;
         rear = -1;
         nItems = 0;
     }
 
-    public void insert(String item) // put item at rear of queue
+    public void insert(Voertuig voertuig) // put item at rear of queue
     {
         int currentItemIndex;
         if (nItems == 0) // if no items,
         {
-            queArray[nItems++] = item; // insert at 0
+            queArray[nItems++] = voertuig; // insert at 0
         } else {
-            for (currentItemIndex = nItems - 1; currentItemIndex >= 0; currentItemIndex--) { // start at end,
-                if (item == "Politie met sirene") {
-                    queArray[currentItemIndex + 1] = queArray[currentItemIndex];
-                } else if (item == "Brandweer met sirene") {
-                    queArray[currentItemIndex + 1] = queArray[currentItemIndex];
-                } else {
-                    break;
-                }
-            }
-            queArray[currentItemIndex + 1] = item;
+            for (currentItemIndex = nItems - 1; currentItemIndex >= 0; currentItemIndex--) // start at end,
+            {
+                if (voertuig.getPriority() < queArray[currentItemIndex].getPriority()) // if new item larger,
+                    queArray[currentItemIndex + 1] = queArray[currentItemIndex]; // shift upward
+                else // if smaller,
+                    break; // done shifting
+            } // end for
+            queArray[currentItemIndex + 1] = voertuig;
             nItems++;
         }
     }
@@ -43,9 +43,9 @@ public class PriorityQueue {
         }
     }
 
-    public String remove() // remove minimum item
+    public Voertuig remove() // remove minimum item
     {
-        String temp = queArray[front];//3 // get value and incr front
+        Voertuig temp = queArray[front];//3 // get value and incr front
         queArray[front] = null;//3 removed
         if (front + 1 == maxSize) { // deal with wraparound
             front = 0;
@@ -56,7 +56,7 @@ public class PriorityQueue {
         return temp;
     }
 
-    public String peekFront() { // peek at front of queue
+    public Voertuig peekFront() { // peek at front of queue
         return queArray[front];
     }
 
